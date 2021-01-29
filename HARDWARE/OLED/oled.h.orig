@@ -1,0 +1,90 @@
+#include "stm32f10x.h"
+#include "stdlib.h"
+#include "sys.h"
+#ifndef __OLED_H
+#define __OLED_H
+#define OLED_MODE 1
+#define SIZE 8
+#define XLevelL		0x00
+#define XLevelH		0x10
+#define Max_Column	128
+#define Max_Row		64
+#define	Brightness	0xFF
+#define X_WIDTH 	128
+#define Y_WIDTH 	64
+//-----------------OLED IIC端口定义----------------
+
+#define OLED_SCLK_Clr() GPIO_ResetBits(GPIOB,GPIO_Pin_11)//SCL
+#define OLED_SCLK_Set() GPIO_SetBits(GPIOB,GPIO_Pin_11)
+
+#define OLED_SDIN_Clr() GPIO_ResetBits(GPIOB,GPIO_Pin_10)//SDA
+#define OLED_SDIN_Set() GPIO_SetBits(GPIOB,GPIO_Pin_10)
+
+
+#define OLED_CMD  0	//写命令
+#define OLED_DATA 1	//写数据
+
+
+
+
+
+//OLED控制用函数
+void Delay(unsigned  int count);
+void Delay_1ms(unsigned int Del_1ms);
+void Delay_50ms(unsigned int Del_50ms);
+void OLED_IIC_Start(void);
+void OLED_IIC_Stop(void);
+void OLED_Write_IIC_Command(unsigned char IIC_Command);
+void OLED_Write_IIC_Data(unsigned char IIC_Data);
+void OLED_Write_IIC_Byte(unsigned char IIC_Byte);
+void OLED_IIC_Wait_Ack(void);
+void OLED_WR_Byte(unsigned dat,unsigned cmd);
+void OLED_Display_On(void);
+void OLED_Display_Off(void);
+void OLED_Init(void);
+void OLED_Clear(void);
+void OLED_Refresh(void);
+void OLED_Set_Pos(unsigned char x, unsigned char y);
+//测试OLED显示状况
+void OLED_On(void);
+//画点
+void OLED_DrawPoint(u8 x,u8 y);
+//画点 画线函数用
+void OLED_DrawDot(unsigned char x,unsigned char y,unsigned char t);
+
+//擦除点
+void OLED_ClearPoint(u8 x,u8 y);
+//OLED显示中文用函数
+//16x16显示之前在main.c函数头部声明字库,取模用
+void OLED_ShowCHinese16x16(uint8_t x,uint8_t y,uint8_t num,uint8_t (*buf)[16]);	
+//取模用PCtoLCD
+void OLED_ShowChinese32(u8 x,u8 y,u8 num);     			 						
+//显示数字，会靠右边显示，所以提前确认数字多少位，以便显示在正确的位置
+void OLED_ShowNumber(unsigned  char x,unsigned  char y,unsigned  int num,unsigned  char len);
+//显示单个字符
+void OLED_ShowChar(unsigned  char x,unsigned  char y,unsigned  char chr,unsigned  char Char_Size);
+//显示字符串
+void OLED_ShowString(unsigned    char x,unsigned  char y, unsigned  char *p,unsigned  char Char_Size);
+//OLED图片取模用zimoV2.2.exe，一步一步就对了
+void OLED_DrawBMP(unsigned char x0, unsigned char y0,unsigned char x1, unsigned char y1,unsigned char BMP[]);
+//根据ASCII码显示字符
+void OLED_fuhao_write(unsigned char x,unsigned char y,unsigned char asc);
+void OLED_Num_write(unsigned char x,unsigned char y,unsigned char asc) ;
+//显示小数并保留N位小数
+void OLED_Float(unsigned char X,unsigned char Y,double real,unsigned char N);
+
+
+
+
+
+//未知函数区
+void fill_picture(unsigned char fill_Data);
+void OLED_Float2(unsigned char Y,unsigned char X,double real,unsigned char N1,unsigned char N2);
+
+
+//特殊功能区
+//发送开始滚屏（2f）前要先传输好显示数据，如果在滚屏的时候传输显示数据RAM中的内容可能被损坏。
+//滚屏命令不能放在while(1)里面
+//void Roll_vertical(void);
+void Roll_level(unsigned dir);
+#endif
